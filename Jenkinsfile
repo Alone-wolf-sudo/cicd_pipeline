@@ -2,19 +2,21 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Clone Repository') {
             steps {
-                echo 'Building...'
+                git 'https://github.com/Alone-wolf-sudo/cicd_pipeline.git'
             }
         }
-        stage('Test') {
+        stage('Run Python Script') {
             steps {
-                echo 'Testing...'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying...'
+                script {
+                    def pythonHome = tool name: 'Python 3', type: 'Python'
+                    withEnv(["PATH+PYTHON=${pythonHome}/bin"]) {
+                        dir('regression_test') {
+                            sh 'python main.py'
+                        }
+                    }
+                }
             }
         }
     }
